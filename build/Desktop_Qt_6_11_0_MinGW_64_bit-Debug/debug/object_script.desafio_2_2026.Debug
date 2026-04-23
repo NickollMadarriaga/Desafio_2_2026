@@ -1,0 +1,10 @@
+debug/eliminatorias.o
+debug/equipo.o
+debug/estadisticas_equipo.o
+debug/estadisticas_jugador.o
+debug/estadisticas_partido.o
+debug/grupo.o
+debug/jugador.o
+debug/main.o
+debug/partido.o
+debug/udeaworldcup.o

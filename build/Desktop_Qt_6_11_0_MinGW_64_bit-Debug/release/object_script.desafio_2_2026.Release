@@ -1,0 +1,10 @@
+release/eliminatorias.o
+release/equipo.o
+release/estadisticas_equipo.o
+release/estadisticas_jugador.o
+release/estadisticas_partido.o
+release/grupo.o
+release/jugador.o
+release/main.o
+release/partido.o
+release/udeaworldcup.o

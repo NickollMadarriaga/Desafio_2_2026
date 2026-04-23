@@ -1,5 +1,6 @@
 #ifndef JUGADOR_H
 #define JUGADOR_H
+#include <fstream>
 
 class Jugador
 {
