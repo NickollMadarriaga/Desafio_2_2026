@@ -1,5 +1,7 @@
 #ifndef ESTADISTICASJUGADOR_H
 #define ESTADISTICASJUGADOR_H
+#include <iostream>
+using namespace std;
 
 class EstadisticasJugador {
 private:
@@ -13,6 +15,8 @@ private:
 
 public:
     EstadisticasJugador();
+    void guardarEnArchivo(ofstream& out) const;
+    void cargarDesdeArchivo(ifstream& in);
 
     EstadisticasJugador(int partidos, int goles, int minutos, int faltas,
                         int amarillas, int rojas, int asistencias);

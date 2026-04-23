@@ -1,6 +1,8 @@
 #ifndef JUGADOR_H
 #define JUGADOR_H
 #include <fstream>
+#include "estadisticas_jugador.h"
+using namespace std;
 
 class Jugador
 {
@@ -12,18 +14,18 @@ private:
 
 public:
     Jugador();
-    Jugador(const char* nombre, const char* apellido, int numero, const EstadisticasJugador& stats);
+    Jugador(const char* nombre, const char* apellido, int numeroCamisa, const EstadisticasJugador& stats);
     Jugador(const Jugador& otro); // Constructor de copia
     ~Jugador();
 
     const char* getNombre() const;
     const char* getApellido() const;
-    int getNumero() const;
+    int getnumeroCamisa() const;
     EstadisticasJugador* getEstadisticas() const;
 
     void setNombre(const char* n);
     void setApellido(const char* a);
-    void setNumero(int n);
+    void setnumeroCamisa(int n);
 
     void actualizarEstadisticas(int golesPartido, int minutosPartido,
                                 int faltasPartido, int amarillasPartido, int rojasPartido);

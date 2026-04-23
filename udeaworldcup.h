@@ -50,6 +50,4 @@ private:
     void contarIteracion(int n = 1);
 };
 
-#endif
-
 #endif // UDEAWORLDCUP_H

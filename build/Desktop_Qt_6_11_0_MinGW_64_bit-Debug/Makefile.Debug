@@ -140,12 +140,14 @@ debug/eliminatorias.o: ../../eliminatorias.cpp ../../eliminatorias.h \
 		../../Partido.h \
 		../../Equipo.h \
 		../../jugador.h \
+		../../estadisticas_jugador.h \
 		../../estadisticas_equipo.h \
 		../../estadisticas_partido.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\eliminatorias.o ..\..\eliminatorias.cpp
 
 debug/equipo.o: ../../equipo.cpp ../../equipo.h \
 		../../jugador.h \
+		../../estadisticas_jugador.h \
 		../../estadisticas_equipo.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\equipo.o ..\..\equipo.cpp
 
@@ -161,12 +163,14 @@ debug/estadisticas_partido.o: ../../estadisticas_partido.cpp ../../estadisticas_
 debug/grupo.o: ../../grupo.cpp ../../grupo.h \
 		../../Equipo.h \
 		../../jugador.h \
+		../../estadisticas_jugador.h \
 		../../estadisticas_equipo.h \
 		../../Partido.h \
 		../../estadisticas_partido.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\grupo.o ..\..\grupo.cpp
 
-debug/jugador.o: ../../jugador.cpp ../../jugador.h
+debug/jugador.o: ../../jugador.cpp ../../jugador.h \
+		../../estadisticas_jugador.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\jugador.o ..\..\jugador.cpp
 
 debug/main.o: ../../main.cpp 
@@ -175,11 +179,20 @@ debug/main.o: ../../main.cpp
 debug/partido.o: ../../partido.cpp ../../partido.h \
 		../../Equipo.h \
 		../../jugador.h \
+		../../estadisticas_jugador.h \
 		../../estadisticas_equipo.h \
 		../../estadisticas_partido.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\partido.o ..\..\partido.cpp
 
-debug/udeaworldcup.o: ../../udeaworldcup.cpp ../../udeaworldcup.h
+debug/udeaworldcup.o: ../../udeaworldcup.cpp ../../udeaworldcup.h \
+		../../Equipo.h \
+		../../jugador.h \
+		../../estadisticas_jugador.h \
+		../../estadisticas_equipo.h \
+		../../Grupo.h \
+		../../Partido.h \
+		../../estadisticas_partido.h \
+		../../Eliminatorias.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\udeaworldcup.o ..\..\udeaworldcup.cpp
 
 ####### Install
