@@ -64,69 +64,55 @@ int Grupo::getCantidadEquipos() const {
 }
 
 void Grupo::configurarPartidos(const char* fechaInicio) {
-    // tdos contra todos
-    int pares[6][2] = {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
 
-    // Asignamos fechas simples: dias 1,4,7,10,13,16 (un partido por par, cada equipo descansa 3 dias)
+    int pares[6][2] = {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
     int diasOffset[6] = {0, 3, 6, 1, 4, 7};
 
-    int dd, mm, aaaa;
+    int dd = 0, mm = 0, aaaa = 0;
     int i = 0;
-    dd = 0;
 
     while (fechaInicio[i] != '/') {
         dd = dd * 10 + (fechaInicio[i] - '0');
+        i++;
+    }
+    i++;
+
+    while (fechaInicio[i] != '/') {
+        mm = mm * 10 + (fechaInicio[i] - '0');
+        i++;
+    }
+    i++;
+
+    while (fechaInicio[i] != '\0') {
+        aaaa = aaaa * 10 + (fechaInicio[i] - '0');
         i++;
     }
 
     char arb[MAX_ARBITROS][30] = {"codArbitro1", "codArbitro2", "codArbitro3"};
 
     for (int i = 0; i < PARTIDOS_POR_GRUPO; i++) {
+
         int dia = dd + diasOffset[i];
-        int mes = mm, anio = aaaa;
-        while (dia > 30) { dia -= 30; mes++; }
+        int mes = mm;
+        int anio = aaaa;
 
-        char fechaBuf[11];
-        int pos = 0;
-
-        if (dia < 10) {
-            fechaBuf[pos++] = '0';
-        }
-        fechaBuf[pos++] = (dia / 10) + '0';
-        fechaBuf[pos++] = (dia % 10) + '0';
-
-        fechaBuf[pos++] = '/';
-
-        if (mes < 10) {
-            fechaBuf[pos++] = '0';
-        }
-        fechaBuf[pos++] = (mes / 10) + '0';
-        fechaBuf[pos++] = (mes % 10) + '0';
-
-        fechaBuf[pos++] = '/';
-
-        int temp = anio;
-        int dig[4];
-
-        for (int i = 3; i >= 0; i--) {
-            dig[i] = temp % 10;
-            temp /= 10;
+        // Ajuste simple de mes (junio a julio)
+        while (dia > 30) {
+            dia -= 30;
+            mes++;
         }
 
-        for (int i = 0; i < 4; i++) {
-            fechaBuf[pos++] = dig[i] + '0';
-        }
+        char fechaBuf[12];
 
-        fechaBuf[pos] = '\0';
-
+        sprintf(fechaBuf, "%02d/%02d/%d", dia, mes, anio);
 
         Equipo* e1 = equipos[pares[i][0]];
         Equipo* e2 = equipos[pares[i][1]];
+
         partidos[i] = Partido(e1, e2, fechaBuf, "00:00", "nombreSede",
                               (const char(*)[30])arb);
     }
 }
-
 void Grupo::simularPartidos() {
     for (int i = 0; i < PARTIDOS_POR_GRUPO; i++) {
         partidos[i].simularPartido();
@@ -202,20 +188,44 @@ void Grupo::mostrarGrupo() const {
 
 void Grupo::mostrarTablaClasificacion() const {
     int* orden = obtenerClasificacion();
-    cout << "--- Tabla Grupo " << letra << " ---" << endl;
+    cout << "Tabla Grupo " << letra << endl;
     cout << "Equipo                 PJ PG PE PP GF GC DG PTS" << endl;
     for (int i = 0; i < EQUIPOS_POR_GRUPO; i++) {
         int idx = orden[i];
         if (!equipos[idx]) continue;
-        int pj = 3;
-        int dg = golesAFavor[idx] - golesEnContra[idx];
+
+        int gf  = golesAFavor[idx];
+        int gc  = golesEnContra[idx];
+        int pts = puntajes[idx];
+        int dg  = gf - gc;
+
+        int pg = 0, pe = 0, pp = 0;
+        for (int p = 0; p < PARTIDOS_POR_GRUPO; p++) {
+            if (!partidos[p].isSimulado()) continue;
+            Equipo* e1 = partidos[p].getEquipo1();
+            Equipo* e2 = partidos[p].getEquipo2();
+            if (e1 != equipos[idx] && e2 != equipos[idx]) continue;
+            int g1 = partidos[p].getStatsEquipo1()->getGoles();
+            int g2 = partidos[p].getStatsEquipo2()->getGoles();
+            // Determinar resultado para este equipo
+            bool esE1 = (e1 == equipos[idx]);
+            int gF = esE1 ? g1 : g2;
+            int gC = esE1 ? g2 : g1;
+            if (gF > gC) pg++;
+            else if (gF == gC) pe++;
+            else pp++;
+        }
+        int pj = pg + pe + pp;
+
         cout.width(22); cout << left << equipos[idx]->getNombre();
         cout << " " << pj
-             << " " << golesAFavor[idx]  // PG aproximado
-             << " " << golesAFavor[idx]
-             << " " << golesEnContra[idx]
+             << " " << pg
+             << " " << pe
+             << " " << pp
+             << " " << gf
+             << " " << gc
              << " " << dg
-             << " " << puntajes[idx] << endl;
+             << " " << pts << endl;
     }
     delete[] orden;
 }

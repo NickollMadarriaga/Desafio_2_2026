@@ -1,5 +1,7 @@
 #include "equipo.h"
 #include <iostream>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 using namespace std;
 
@@ -255,3 +257,177 @@ void Equipo::mostrarConJugadores() const {
     mostrar();
     for (int i = 0; i < MAX_JUGADORES; i++) jugadores[i].mostrar();
 }
+
+void Equipo::guardarHistorico() const {
+
+    char ruta[220] = "historico/";
+
+    int i = 0, pos = 10;
+
+    while (nombre[i] != '\0' && pos < 210) {
+        ruta[pos++] = (nombre[i] == ' ') ? '_' : nombre[i];
+        i++;
+    }
+
+    ruta[pos++] = '.';
+    ruta[pos++] = 'c';
+    ruta[pos++] = 's';
+    ruta[pos++] = 'v';
+    ruta[pos] = '\0';
+
+    FILE* f = fopen(ruta, "w");
+
+    if (f == NULL) {
+        fs::create_directory("historico");
+        f = fopen(ruta, "w");
+        if (f == NULL) return;
+    }
+
+    fprintf(f, "numero;nombre;apellido;partidos;goles;minutos;faltas;amarillas;rojas;asistencias\n");
+
+    for (int i = 0; i < MAX_JUGADORES; i++) {
+
+        EstadisticasJugador* ej = jugadores[i].getEstadisticas();
+        if (!ej) continue;
+
+        // número
+        fprintf(f, "%d;", jugadores[i].getnumeroCamisa());
+
+        // nombre y apellido
+        fprintf(f, "%s;", jugadores[i].getNombre());
+        fprintf(f, "%s;", jugadores[i].getApellido());
+
+        // estadísticas
+        fprintf(f, "%d;%d;%d;%d;%d;%d;%d\n",
+                ej->getPartidos(),
+                ej->getGoles(),
+                ej->getMinutos(),
+                ej->getFaltas(),
+                ej->getAmarillas(),
+                ej->getRojas(),
+                ej->getAsistencias()
+                );
+    }
+
+    fclose(f);
+}
+void Equipo::cargarHistorico() {
+
+    char ruta[220] = "historico/";
+
+    int i = 0;
+    int pos = 10;
+
+    while (nombre[i] != '\0' && pos < 210) {
+        if (nombre[i] == ' ')
+            ruta[pos++] = '_';
+        else
+            ruta[pos++] = nombre[i];
+        i++;
+    }
+
+    ruta[pos++] = '.';
+    ruta[pos++] = 'c';
+    ruta[pos++] = 's';
+    ruta[pos++] = 'v';
+    ruta[pos] = '\0';
+
+    FILE* f = fopen(ruta, "r");
+    if (f == NULL) return;
+
+    char linea[256];
+
+    fgets(linea, 256, f); // saltar encabezado
+
+    int j = 0;
+
+    while (fgets(linea, 256, f) && j < MAX_JUGADORES) {
+
+        int num, partidos, goles, minutos, faltas, amarillas, rojas, asistencias;
+        char nom[50], ape[50];
+
+        int pos = 0;
+
+        num = 0;
+        while (linea[pos] != ';') {
+            num = num * 10 + (linea[pos] - '0');
+            pos++;
+        }
+        pos++;
+
+        int k = 0;
+        while (linea[pos] != ';') {
+            nom[k++] = linea[pos++];
+        }
+        nom[k] = '\0';
+        pos++;
+
+        k = 0;
+        while (linea[pos] != ';') {
+            ape[k++] = linea[pos++];
+        }
+        ape[k] = '\0';
+        pos++;
+
+        partidos = 0;
+        while (linea[pos] != ';') {
+            partidos = partidos * 10 + (linea[pos] - '0');
+            pos++;
+        }
+        pos++;
+
+        goles = 0;
+        while (linea[pos] != ';') {
+            goles = goles * 10 + (linea[pos] - '0');
+            pos++;
+        }
+        pos++;
+
+        minutos = 0;
+        while (linea[pos] != ';') {
+            minutos = minutos * 10 + (linea[pos] - '0');
+            pos++;
+        }
+        pos++;
+
+        faltas = 0;
+        while (linea[pos] != ';') {
+            faltas = faltas * 10 + (linea[pos] - '0');
+            pos++;
+        }
+        pos++;
+
+        amarillas = 0;
+        while (linea[pos] != ';') {
+            amarillas = amarillas * 10 + (linea[pos] - '0');
+            pos++;
+        }
+        pos++;
+
+        rojas = 0;
+        while (linea[pos] != ';') {
+            rojas = rojas * 10 + (linea[pos] - '0');
+            pos++;
+        }
+        pos++;
+
+        asistencias = 0;
+        while (linea[pos] != '\0' && linea[pos] != '\n') {
+            asistencias = asistencias * 10 + (linea[pos] - '0');
+            pos++;
+        }
+
+
+        jugadores[j].setnumeroCamisa(num);
+        jugadores[j].setNombre(nom);
+        jugadores[j].setApellido(ape);
+
+        EstadisticasJugador stats(partidos, goles, minutos, faltas, amarillas, rojas, asistencias);
+        *jugadores[j].getEstadisticas() = stats;
+
+        j++;
+    }
+
+    fclose(f);
+}
+

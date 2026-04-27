@@ -48,7 +48,8 @@ public:
     bool operator<(const Equipo& otro) const; // Comparar por ranking
     bool operator==(const Equipo& otro) const;
     Equipo& operator=(const Equipo& otro);
-
+    void guardarHistorico() const;
+    void cargarHistorico();
     void mostrar() const;
     void mostrarConJugadores() const;
 };

@@ -26,7 +26,7 @@ private:
 public:
     UdeAWorldCup();
     ~UdeAWorldCup();
-
+    bool son_Iguales(const char* a, const char* b);
     void cargarDatos();
     void generarGrupos();
     void simularFaseGrupos();

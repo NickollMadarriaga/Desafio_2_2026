@@ -302,6 +302,7 @@ void Partido::mostrar() const {
          << statsEquipo2->getGoles() << " " << equipo2->getNombre();
     if (fueProrroga) cout << " (Prorroga)";
     cout << "  Sede: " << sede << endl;
+    cout<< "Arbitros:" <<arbitros[0]<<","<< arbitros[1]<<arbitros[2]<<endl;
     cout << "  " << equipo1->getNombre() << ": ";
     statsEquipo1->mostrar();
     cout << "  " << equipo2->getNombre() << ": ";
